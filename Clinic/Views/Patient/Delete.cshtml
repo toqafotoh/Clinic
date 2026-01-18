@@ -1,0 +1,57 @@
+﻿@model Clinic.Domain.Entities.Patient
+@{
+    ViewData["Title"] = "Delete Patient";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Delete Patient
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h5>
+                    <p>You are about to delete this patient. This action cannot be undone.</p>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Patient ID:</dt>
+                    <dd class="col-sm-8">@Model.PatientId</dd>
+
+                    <dt class="col-sm-4">Name:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4">Birth Date:</dt>
+                    <dd class="col-sm-8">@Model.BirthDate.ToString("yyyy-MM-dd")</dd>
+
+                    <dt class="col-sm-4">Age:</dt>
+                    <dd class="col-sm-8">@Model.Age years</dd>
+                </dl>
+
+                @if (Model.Appointments != null && Model.Appointments.Any())
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> This patient has @Model.Appointments.Count appointment(s).
+                        All appointments will be cancelled.
+                    </div>
+                }
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="PatientId" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Patient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

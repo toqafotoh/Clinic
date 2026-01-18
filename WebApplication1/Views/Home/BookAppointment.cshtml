@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title mb-0">
+                        <i class="bi bi-calendar-plus"></i> Book an Appointment
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form id="bookingForm" method="post" asp-controller="Appointment" asp-action="Book">
+                        @Html.AntiForgeryToken()
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="doctorId" class="form-label">Select Doctor</label>
+                                <select class="form-select" id="doctorId" required>
+                                    <option value="">-- Select Doctor --</option>
+                                    @foreach (var doctor in ViewBag.Doctors)
+                                    {
+                                        <option value="@doctor.DoctorId">@doctor.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="patientId" class="form-label">Select Patient</label>
+                                <select class="form-select" id="patientId" name="patientId" required>
+                                    <option value="">-- Select Patient --</option>
+                                    @foreach (var patient in ViewBag.Patients)
+                                    {
+                                        <option value="@patient.PatientId">@patient.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="appointmentDate" class="form-label">Appointment Date</label>
+                                <input type="date" class="form-control" id="appointmentDate" required
+                                       min="@DateTime.Today.ToString("yyyy-MM-dd")">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="appointmentSlot" class="form-label">Available Time Slots</label>
+                                <select class="form-select" id="appointmentSlot" name="id" disabled required>
+                                    <option value="">-- Select Date and Doctor First --</option>
+                                </select>
+                                <small class="text-muted" id="slotInfo"></small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="bookButton" disabled>
+                                <i class="bi bi-calendar-check"></i> Book Appointment
+                            </button>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // When doctor or date changes, load available appointments
+            $('#doctorId, #appointmentDate').change(function() {
+                loadAvailableAppointments();
+            });
+
+            function loadAvailableAppointments() {
+                const doctorId = $('#doctorId').val();
+                const date = $('#appointmentDate').val();
+
+                // Reset appointment slot dropdown
+                const slotSelect = $('#appointmentSlot');
+                slotSelect.empty().append('<option value="">-- Select Time Slot --</option>');
+                slotSelect.prop('disabled', true);
+                $('#bookButton').prop('disabled', true);
+                $('#slotInfo').text('');
+
+                // Check if both doctor and date are selected
+                if (!doctorId || !date) {
+                    return;
+                }
+
+                // Show loading
+                $('#slotInfo').html('<i class="bi bi-hourglass-split"></i> Loading available slots...');
+
+                // Fetch available appointments
+                $.get('/Home/GetAvailableAppointments', { doctorId: doctorId, date: date })
+                    .done(function(response) {
+                        if (response.success && response.appointments.length > 0) {
+                            // Populate dropdown with available appointments
+                            response.appointments.forEach(function(appointment) {
+                                slotSelect.append(
+                                    `<option value="${appointment.id}">${appointment.displayText}</option>`
+                                );
+                            });
+
+                            slotSelect.prop('disabled', false);
+                            $('#bookButton').prop('disabled', false);
+                            $('#slotInfo').html(
+                                `<i class="bi bi-check-circle text-success"></i> ${response.appointments.length} slot(s) available`
+                            );
+                        } else {
+                            $('#slotInfo').html( 
+                                '<i class="bi bi-exclamation-circle text-warning"></i> No available slots for this date. Please create slots first.'
+                            );
+                        }
+                    })
+                    .fail(function() {
+                        $('#slotInfo').html(
+                            '<i class="bi bi-x-circle text-danger"></i> Error loading appointments. Please try again.'
+                        );
+                    });
+            }
+
+            // Form validation
+            $('#bookingForm').submit(function(e) {
+                const appointmentId = $('#appointmentSlot').val();
+                if (!appointmentId) {
+                    e.preventDefault();
+                    alert('Please select an available time slot.');
+                    return false;
+                }
+            });
+        });
+    </script>
+}

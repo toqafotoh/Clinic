@@ -1,0 +1,98 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="display-4">Clinic Management System</h1>
+        <p class="lead">Manage your clinic efficiently with our comprehensive system</p>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Clinics</h5>
+                        <p class="card-text">Manage clinic locations</p>
+                    </div>
+                    <i class="bi bi-hospital fs-1"></i>
+                </div>
+                <a asp-controller="Clinic" asp-action="Index" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Doctors</h5>
+                        <p class="card-text">Manage medical staff</p>
+                    </div>
+                    <i class="bi bi-people fs-1"></i>
+                </div>
+                <a asp-controller="Doctor" asp-action="Index" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Patients</h5>
+                        <p class="card-text">Manage patient records</p>
+                    </div>
+                    <i class="bi bi-person-circle fs-1"></i>
+                </div>
+                <a asp-controller="Patient" asp-action="Index" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title">Appointments</h5>
+                        <p class="card-text">Schedule & manage bookings</p>
+                    </div>
+                    <i class="bi bi-calendar-check fs-1"></i>
+                </div>
+                <a asp-controller="Appointment" asp-action="Index" class="stretched-link"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <a asp-controller="Appointment" asp-action="CreateSlot" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                            <i class="bi bi-plus-circle"></i> Create Appointment Slot
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a asp-controller="Home" asp-action="BookAppointment" class="btn btn-outline-success btn-lg w-100 mb-2">
+                            <i class="bi bi-calendar-plus"></i> Book Appointment
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a asp-controller="DoctorSchedule" asp-action="Create" class="btn btn-outline-info btn-lg w-100 mb-2">
+                            <i class="bi bi-clock"></i> Add Doctor Schedule
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

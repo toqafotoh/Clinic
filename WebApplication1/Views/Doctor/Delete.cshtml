@@ -1,0 +1,62 @@
+﻿@model Clinic.Domain.Entities.Doctor
+@{
+    ViewData["Title"] = "Delete Doctor";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Delete Doctor
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h5>
+                    <p>You are about to delete this doctor. This action cannot be undone.</p>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Doctor ID:</dt>
+                    <dd class="col-sm-8">@Model.DoctorId</dd>
+
+                    <dt class="col-sm-4">Name:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+
+                    <dt class="col-sm-4">Clinic:</dt>
+                    <dd class="col-sm-8">@Model.Clinic?.Name</dd>
+                </dl>
+
+                @if (Model.Schedules != null && Model.Schedules.Any())
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> This doctor has @Model.Schedules.Count schedule(s).
+                        All schedules will be deleted.
+                    </div>
+                }
+
+                @if (Model.Appointments != null && Model.Appointments.Any())
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> This doctor has @Model.Appointments.Count appointment(s).
+                        All appointments will be deleted.
+                    </div>
+                }
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="DoctorId" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Doctor
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

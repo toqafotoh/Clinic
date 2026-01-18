@@ -1,0 +1,12 @@
+﻿@model dynamic
+
+@await Html.PartialAsync("_ValidationSummary")
+
+<form asp-action="@ViewData["Action"]" method="post">
+    @Html.AntiForgeryToken()
+
+    @RenderBody()
+
+    <button type="submit" class="btn btn-primary mt-3">Save</button>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
+</form>

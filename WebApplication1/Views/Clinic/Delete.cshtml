@@ -1,0 +1,51 @@
+﻿@model Clinic.Domain.Entities.Clinic
+@{
+    ViewData["Title"] = "Delete Clinic";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Delete Clinic
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h5>
+                    <p>You are about to delete this clinic. This action cannot be undone.</p>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Clinic ID:</dt>
+                    <dd class="col-sm-8">@Model.ClinicId</dd>
+
+                    <dt class="col-sm-4">Name:</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
+                </dl>
+
+                @if (Model.Doctors != null && Model.Doctors.Any())
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> This clinic has @Model.Doctors.Count doctor(s) assigned.
+                        Deleting it will remove all associated doctors and their schedules.
+                    </div>
+                }
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="ClinicId" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Clinic
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

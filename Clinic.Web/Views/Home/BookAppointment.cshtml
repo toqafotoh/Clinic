@@ -1,0 +1,152 @@
+﻿@{
+    ViewData["Title"] = "Book Appointment";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Book an Appointment</h3>
+                </div>
+                <div class="card-body">
+                    <form id="bookingForm" method="post" action="/Appointment/BookDirect">
+                        @Html.AntiForgeryToken()
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="doctorId" class="form-label">Select Doctor</label>
+                                <select class="form-select" id="doctorId" name="doctorId" required>
+                                    <option value="">-- Select Doctor --</option>
+                                    @foreach (var doctor in ViewBag.Doctors)
+                                    {
+                                        <option value="@doctor.DoctorId">@doctor.Name</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback">Please select a doctor.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="patientId" class="form-label">Select Patient</label>
+                                <select class="form-select" id="patientId" name="patientId" required>
+                                    <option value="">-- Select Patient --</option>
+                                    @foreach (var patient in ViewBag.Patients)
+                                    {
+                                        <option value="@patient.PatientId">@patient.Name</option>
+                                    }
+                                </select>
+                                <div class="invalid-feedback">Please select a patient.</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="appointmentDate" class="form-label">Appointment Date</label>
+                                <input type="date" class="form-control" id="appointmentDate" name="date" required
+                                       min="@DateTime.Today.ToString("yyyy-MM-dd")">
+                                <div class="invalid-feedback">Please select a valid date.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="appointmentTime" class="form-label">Select Time Slot</label>
+                                <select class="form-select" id="appointmentTime" name="time" disabled required>
+                                    <option value="">-- Select Time --</option>
+                                </select>
+                                <div class="invalid-feedback">Please select a time slot.</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div id="availableSlots" class="d-none">
+                                <h5>Available Time Slots:</h5>
+                                <div id="timeSlots" class="row mt-2"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary" id="bookButton" disabled>
+                                <i class="bi bi-calendar-check"></i> Book Appointment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            let availableAppointments = [];
+
+            // When doctor or date changes, load available slots
+            $('#doctorId, #appointmentDate').change(function() {
+                const doctorId = $('#doctorId').val();
+                const date = $('#appointmentDate').val();
+
+                if (doctorId && date) {
+                    loadAvailableSlots(doctorId, date);
+                } else {
+                    $('#appointmentTime').prop('disabled', true);
+                    $('#availableSlots').addClass('d-none');
+                    $('#bookButton').prop('disabled', true);
+                }
+            });
+
+            function loadAvailableSlots(doctorId, date) {
+                $.get(`/Appointment/GetFreeSlots?doctorId=${doctorId}&date=${date}`, function(slots) {
+                    availableAppointments = slots;
+                    updateTimeSlotsDisplay(slots);
+                });
+            }
+
+            function updateTimeSlotsDisplay(slots) {
+                const container = $('#timeSlots');
+                const timeSelect = $('#appointmentTime');
+                container.empty();
+                timeSelect.empty().append('<option value="">-- Select Time --</option>');
+
+                if (slots.length === 0) {
+                    container.html('<div class="col-12"><div class="alert alert-warning">No available slots for this date.</div></div>');
+                    timeSelect.prop('disabled', true);
+                    $('#bookButton').prop('disabled', true);
+                    $('#availableSlots').removeClass('d-none');
+                    return;
+                }
+
+                slots.forEach((slot, index) => {
+                    const timeStr = formatTime(slot);
+
+                    // Add to time select
+                    timeSelect.append(`<option value="${slot}">${timeStr}</option>`);
+
+                    // Add to radio buttons display
+                    const col = `
+                        <div class="col-md-3 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input slot-radio" type="radio"
+                                       name="selectedSlot" id="slot${index}" value="${slot}" required>
+                                <label class="form-check-label" for="slot${index}">
+                                    ${timeStr}
+                                </label>
+                            </div>
+                        </div>`;
+                    container.append(col);
+                });
+
+                $('#availableSlots').removeClass('d-none');
+                timeSelect.prop('disabled', false);
+                $('#bookButton').prop('disabled', false);
+
+                // When radio button is clicked, update the select
+                $('.slot-radio').click(function() {
+                    timeSelect.val($(this).val());
+                });
+            }
+
+            function formatTime(timeSpan) {
+                const hours = Math.floor(timeSpan.totalHours);
+                const minutes = timeSpan.minutes;
+                return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+            }
+        });
+    </script>
+}

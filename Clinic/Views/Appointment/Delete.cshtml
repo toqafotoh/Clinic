@@ -1,0 +1,66 @@
+﻿@model Clinic.Domain.Entities.Appointment
+@{
+    ViewData["Title"] = "Delete Appointment";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Delete Appointment
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h5><i class="bi bi-exclamation-triangle-fill"></i> Warning!</h5>
+                    <p>You are about to delete this appointment. This action cannot be undone.</p>
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Appointment ID:</dt>
+                    <dd class="col-sm-8">@Model.AppointmentId</dd>
+
+                    <dt class="col-sm-4">Doctor:</dt>
+                    <dd class="col-sm-8">@Model.Doctor?.Name</dd>
+
+                    <dt class="col-sm-4">Patient:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Patient != null)
+                        {
+                            @Model.Patient.Name
+                        }
+                        else
+                        {
+                            <span class="text-muted">Available slot</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Date & Time:</dt>
+                    <dd class="col-sm-8">@Model.AppointmentDate.ToString("yyyy-MM-dd") @Model.StartTime.ToString(@"hh\:mm")</dd>
+                </dl>
+
+                @if (Model.PatientId != null)
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-circle"></i> This is a booked appointment.
+                        The patient will be notified of cancellation.
+                    </div>
+                }
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="AppointmentId" />
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Delete Appointment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
