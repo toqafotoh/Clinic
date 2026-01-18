@@ -5,7 +5,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
-namespace WebApplication1
+namespace Clinic.Web
 {
     public class PatientController : Controller
     {

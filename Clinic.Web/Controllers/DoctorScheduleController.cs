@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebApplication1
+
+namespace Clinic.Web
 {
     public class DoctorScheduleController : Controller
     {

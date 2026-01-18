@@ -8,7 +8,8 @@ using Clinic.Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
-namespace WebApplication1
+
+namespace Clinic.Web
 {
     public class Program
     {

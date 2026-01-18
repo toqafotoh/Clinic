@@ -5,7 +5,8 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using ClinicEntity = Clinic.Domain.Entities.Clinic;
-namespace WebApplication1
+
+namespace Clinic.Web
 {
     public class ClinicController : Controller
     {

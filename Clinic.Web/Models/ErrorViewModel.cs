@@ -1,4 +1,5 @@
-namespace WebApplication1.Models
+
+namespace Clinic.Web.Models
 {
     public class ErrorViewModel
     {
